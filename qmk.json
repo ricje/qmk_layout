@@ -1,0 +1,13 @@
+{
+  "userspace_version": "1.1",
+  "build_targets": [
+    [
+      "ergodox_ez",
+      "ricje"
+    ],
+    [
+      "crkbd/rev4_1/standard",
+      "ricje"
+    ]
+  ]
+}

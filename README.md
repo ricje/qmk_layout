@@ -1,8 +1,16 @@
-# Custom QMK Firmware for ErgoDox EZ and Corne
+# QMK Userspace for ErgoDox EZ and Corne
 
-This repository contains a clean QMK port of your current Oryx configuration for `ergodox_ez`, without depending on the Oryx module.
+This repository is now structured as a standard QMK userspace.
 
-It also contains an analogous `crkbd` keymap for a Corne v4.1, adapted from the ErgoDox layout and tuned with the same home-row mod strategy.
+It contains:
+
+- `keyboards/ergodox_ez/keymaps/ricje`
+- `keyboards/crkbd/rev4_1/standard/keymaps/ricje`
+- `qmk.json` with the default build targets
+
+The ErgoDox keymap is a clean QMK port of your previous Oryx configuration.
+
+The Corne keymap is an analogous version adapted to `crkbd/rev4_1/standard` and tuned with the same home-row mod strategy.
 
 The `ricje` ErgoDox keymap keeps the behavior of your current layout:
 
@@ -22,20 +30,14 @@ The `crkbd` variant mirrors the same logic within a 3x6_3 layout and keeps:
 
 ## Structure
 
-Copy one of these directories into a standard QMK checkout:
+Keymaps live in standard userspace paths:
 
-`ergodox_ez/keymaps/ricje`
-`crkbd/keymaps/ricje`
+`keyboards/ergodox_ez/keymaps/ricje`
+`keyboards/crkbd/rev4_1/standard/keymaps/ricje`
 
-Example:
+Default build targets live in:
 
-```sh
-cp -R ergodox_ez/keymaps/ricje ~/src/qmk_firmware/keyboards/ergodox_ez/keymaps/
-cp -R crkbd/keymaps/ricje ~/src/qmk_firmware/keyboards/crkbd/rev4_1/standard/keymaps/
-cd ~/src/qmk_firmware
-qmk compile -kb ergodox_ez -km ricje
-PATH=/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin:$PATH qmk compile -kb crkbd/rev4_1/standard -km ricje
-```
+`qmk.json`
 
 Or from this repository:
 
@@ -77,6 +79,7 @@ The `Makefile` uses this path by default through `QMK_HOME`, but you can overrid
 ```sh
 make compile-ergodox QMK_HOME=$HOME/qmk_firmware
 make compile-crkbd QMK_HOME=$HOME/qmk_firmware
+make compile-all QMK_HOME=$HOME/qmk_firmware
 ```
 
 ## Notes
@@ -86,11 +89,24 @@ make compile-crkbd QMK_HOME=$HOME/qmk_firmware
 - The right-side LEDs indicate the active layer, matching the original Oryx export.
 - Home-row mods have been tuned in QMK to reduce accidental modifier activation while typing.
 
+## CI
+
+This repository includes a GitHub Actions workflow in:
+
+`.github/workflows/qmk-ci.yml`
+
+It builds the targets listed in `qmk.json` on every push to `main`, on pull requests, and on manual dispatch:
+
+- `ergodox_ez:ricje`
+- `crkbd/rev4_1/standard:ricje`
+
+Successful runs upload the compiled firmware files as workflow artifacts.
+
 ## Customization
 
 The main file is:
 
-`ergodox_ez/keymaps/ricje/keymap.c`
+`keyboards/ergodox_ez/keymaps/ricje/keymap.c`
 
 Good next steps if you want to keep evolving this layout:
 
