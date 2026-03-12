@@ -42,6 +42,6 @@ jobs:
         with:
           name: qmk-firmware-artifacts
           path: |
-            qmk_firmware/ergodox_ez_ricje*.hex
+            qmk_firmware/ergodox_ez_base_ricje*.hex
             qmk_firmware/crkbd_rev4_1_standard_ricje*.uf2
           if-no-files-found: error
