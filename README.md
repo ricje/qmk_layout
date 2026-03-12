@@ -1,22 +1,22 @@
-# Firmware QMK custom pour ErgoDox EZ (1re génération)
+# Custom QMK Firmware for ErgoDox EZ (1st generation)
 
-Ce dépôt contient maintenant un port QMK propre de ta configuration Oryx actuelle pour `ergodox_ez`, sans dépendance au module Oryx.
+This repository contains a clean QMK port of your current Oryx configuration for `ergodox_ez`, without depending on the Oryx module.
 
-Le keymap `ricje` conserve le comportement de ton layout existant :
+The `ricje` keymap keeps the behavior of your current layout:
 
-- `BASE` avec home-row mods
-- `NAVIGATION` pour chiffres, flèches et édition
-- `SYMBOLS` pour les symboles
-- `FUNCTION` pour les touches F et modificateurs
-- deux macros de changement de bureau virtuel
+- `BASE` with home-row mods
+- `NAVIGATION` for numbers, arrows, and editing
+- `SYMBOLS` for symbols
+- `FUNCTION` for F-keys and modifier access
+- two virtual desktop switching macros
 
 ## Structure
 
-Copiez le dossier suivant dans un checkout QMK standard :
+Copy this directory into a standard QMK checkout:
 
 `ergodox_ez/keymaps/ricje`
 
-Exemple :
+Example:
 
 ```sh
 cp -R ergodox_ez/keymaps/ricje ~/src/qmk_firmware/keyboards/ergodox_ez/keymaps/
@@ -24,34 +24,53 @@ cd ~/src/qmk_firmware
 qmk compile -kb ergodox_ez -km ricje
 ```
 
-Pour flasher :
+Or from this repository:
+
+```sh
+make compile
+```
+
+To flash:
 
 ```sh
 qmk flash -kb ergodox_ez -km ricje
 ```
 
-Le firmware compilé localement se retrouve dans :
+Or:
+
+```sh
+make flash
+```
+
+The locally compiled firmware is written to:
 
 `/Users/ricje/qmk_firmware/ergodox_ez_base_ricje.hex`
 
+The `Makefile` uses this path by default through `QMK_HOME`, but you can override it:
+
+```sh
+make compile QMK_HOME=$HOME/qmk_firmware
+```
+
 ## Notes
 
-- Les layers `NAVIGATION` et `SYMBOLS` sont accessibles depuis les pouces.
-- Les macros `DESKTOP_NEXT` et `DESKTOP_PREV` envoient `Alt+Ctrl+Right/Left`.
-- Les LEDs de droite indiquent le layer actif comme dans ton export Oryx.
+- The `NAVIGATION` and `SYMBOLS` layers are accessible from the thumb cluster.
+- `DESKTOP_NEXT` and `DESKTOP_PREV` send `Alt+Ctrl+Right/Left`.
+- The right-side LEDs indicate the active layer, matching the original Oryx export.
+- Home-row mods have been tuned in QMK to reduce accidental modifier activation while typing.
 
-## Personnalisation
+## Customization
 
-Le fichier principal est :
+The main file is:
 
 `ergodox_ez/keymaps/ricje/keymap.c`
 
-Si vous voulez, l'étape suivante peut être de l'améliorer sans repartir de zéro :
+Good next steps if you want to keep evolving this layout:
 
-- disposition FR / BEPO / US
-- touches macOS ou Linux
-- tuning des home-row mods
-- layer gaming / dev
+- FR / BEPO / US layout changes
+- macOS or Linux specific behavior
+- further home-row mod tuning
+- gaming or dev-specific layers
 - macros
 - combos
 - tap dance
