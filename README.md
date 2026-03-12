@@ -1,8 +1,10 @@
-# Custom QMK Firmware for ErgoDox EZ (1st generation)
+# Custom QMK Firmware for ErgoDox EZ and Corne
 
 This repository contains a clean QMK port of your current Oryx configuration for `ergodox_ez`, without depending on the Oryx module.
 
-The `ricje` keymap keeps the behavior of your current layout:
+It also contains an analogous `crkbd` keymap for a Corne v4.1, adapted from the ErgoDox layout and tuned with the same home-row mod strategy.
+
+The `ricje` ErgoDox keymap keeps the behavior of your current layout:
 
 - `BASE` with home-row mods
 - `NAVIGATION` for numbers, arrows, and editing
@@ -10,24 +12,41 @@ The `ricje` keymap keeps the behavior of your current layout:
 - `FUNCTION` for F-keys and modifier access
 - two virtual desktop switching macros
 
+The `crkbd` variant mirrors the same logic within a 3x6_3 layout and keeps:
+
+- the same alpha block
+- the same home-row mods
+- the same `NAVIGATION`, `SYMBOLS`, and `FUNCTION` layers
+- the same `DESKTOP_NEXT` and `DESKTOP_PREV` macros
+- the same home-row mod tuning for `Alt`
+
 ## Structure
 
-Copy this directory into a standard QMK checkout:
+Copy one of these directories into a standard QMK checkout:
 
 `ergodox_ez/keymaps/ricje`
+`crkbd/keymaps/ricje`
 
 Example:
 
 ```sh
 cp -R ergodox_ez/keymaps/ricje ~/src/qmk_firmware/keyboards/ergodox_ez/keymaps/
+cp -R crkbd/keymaps/ricje ~/src/qmk_firmware/keyboards/crkbd/rev4_1/standard/keymaps/
 cd ~/src/qmk_firmware
 qmk compile -kb ergodox_ez -km ricje
+PATH=/Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin:$PATH qmk compile -kb crkbd/rev4_1/standard -km ricje
 ```
 
 Or from this repository:
 
 ```sh
-make compile
+make compile-ergodox
+```
+
+For the Corne:
+
+```sh
+make compile-crkbd
 ```
 
 To flash:
@@ -39,17 +58,25 @@ qmk flash -kb ergodox_ez -km ricje
 Or:
 
 ```sh
-make flash
+make flash-ergodox
+```
+
+For the Corne:
+
+```sh
+make flash-crkbd
 ```
 
 The locally compiled firmware is written to:
 
 `/Users/ricje/qmk_firmware/ergodox_ez_base_ricje.hex`
+`/Users/ricje/qmk_firmware/crkbd_rev4_1_standard_ricje.uf2`
 
 The `Makefile` uses this path by default through `QMK_HOME`, but you can override it:
 
 ```sh
-make compile QMK_HOME=$HOME/qmk_firmware
+make compile-ergodox QMK_HOME=$HOME/qmk_firmware
+make compile-crkbd QMK_HOME=$HOME/qmk_firmware
 ```
 
 ## Notes

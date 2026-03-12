@@ -1,0 +1,129 @@
+#include QMK_KEYBOARD_H
+#include "version.h"
+
+enum layers {
+    BASE,
+    NAVIGATION,
+    SYMBOLS,
+    FUNCTION,
+};
+
+enum custom_keycodes {
+    DESKTOP_NEXT = SAFE_RANGE,
+    DESKTOP_PREV,
+};
+
+#define ___ KC_TRNS
+#define XXX KC_NO
+
+#define HM_A GUI_T(KC_A)
+#define HM_S ALT_T(KC_S)
+#define HM_D CTL_T(KC_D)
+#define HM_F SFT_T(KC_F)
+#define HM_J RSFT_T(KC_J)
+#define HM_K RCTL_T(KC_K)
+#define HM_L RALT_T(KC_L)
+#define HM_SCLN RGUI_T(KC_SCLN)
+
+#define TH_NAV MO(NAVIGATION)
+#define TH_SYM MO(SYMBOLS)
+#define TH_FN MO(FUNCTION)
+
+static bool is_home_row_mod(uint16_t keycode) {
+    switch (keycode) {
+        case HM_A:
+        case HM_S:
+        case HM_D:
+        case HM_F:
+        case HM_J:
+        case HM_K:
+        case HM_L:
+        case HM_SCLN:
+            return true;
+        default:
+            return false;
+    }
+}
+
+static bool is_alt_home_row_mod(uint16_t keycode) {
+    switch (keycode) {
+        case HM_S:
+        case HM_L:
+            return true;
+        default:
+            return false;
+    }
+}
+
+// clang-format off
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    [BASE] = LAYOUT_split_3x6_3(
+        KC_DEL,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                           KC_Y,         KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
+        KC_ESC,  HM_A,    HM_S,    HM_D,    HM_F,    KC_G,                           KC_H,         HM_J,    HM_K,    HM_L,    HM_SCLN, KC_QUOT,
+        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,                           KC_N,         KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                                   KC_TAB,  TH_NAV,  KC_SPC,                         KC_ENT,       TH_SYM,  KC_ESC
+    ),
+
+    [NAVIGATION] = LAYOUT_split_3x6_3(
+        KC_EQL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                           KC_6,         KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
+        ___,     KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXX,                            KC_LEFT,      KC_DOWN, KC_UP,   KC_RGHT, KC_BSPC, XXX,
+        ___,     XXX,     XXX,     XXX,     XXX,     XXX,                            KC_HOME,      KC_PGDN, KC_PGUP, KC_END,  KC_DEL,  ___,
+                                   KC_TAB,  TH_FN,   ___,                            ___,          ___,     ___
+    ),
+
+    [SYMBOLS] = LAYOUT_split_3x6_3(
+        XXX,     KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                        KC_CIRC,      KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, ___,
+        ___,     KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, ___,                            KC_MINS,      KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLS, KC_GRV,
+        ___,     XXX,     XXX,     XXX,     XXX,     ___,                            KC_UNDS,      KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, KC_TILD,
+                                   ___,     TH_FN,   ___,                            ___,          ___,     ___
+    ),
+
+    [FUNCTION] = LAYOUT_split_3x6_3(
+        QK_BOOT, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                          KC_F6,        KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
+        ___,     KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, DESKTOP_PREV,                   DESKTOP_NEXT, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, KC_F12,
+        ___,     XXX,     XXX,     XXX,     XXX,     XXX,                            KC_MPRV,      KC_VOLD, KC_VOLU, KC_MNXT, KC_MUTE, KC_MPLY,
+                                   ___,     ___,     ___,                            ___,          ___,     ___
+    ),
+};
+// clang-format on
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    if (is_alt_home_row_mod(keycode)) {
+        return 140;
+    }
+
+    if (is_home_row_mod(keycode)) {
+        return 170;
+    }
+
+    return TAPPING_TERM;
+}
+
+uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
+    if (is_home_row_mod(keycode)) {
+        return 0;
+    }
+
+    return QUICK_TAP_TERM;
+}
+
+bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    return is_home_row_mod(keycode) && !is_alt_home_row_mod(keycode);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        return true;
+    }
+
+    switch (keycode) {
+        case DESKTOP_NEXT:
+            SEND_STRING(SS_LALT(SS_LCTL(SS_TAP(X_RIGHT))));
+            return false;
+        case DESKTOP_PREV:
+            SEND_STRING(SS_LALT(SS_LCTL(SS_TAP(X_LEFT))));
+            return false;
+        default:
+            return true;
+    }
+}
