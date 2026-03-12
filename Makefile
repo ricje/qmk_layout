@@ -3,6 +3,8 @@ KEYMAP ?= ricje
 QMK_HOME ?= /Users/ricje/qmk_firmware
 QMK_BIN_DIR ?= /Users/ricje/.local/bin
 ARM_GCC_BIN ?= /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin
+DOCKER ?= docker
+QMK_CI_IMAGE ?= ghcr.io/qmk/qmk_cli:latest
 
 ERGODOX_KEYBOARD ?= ergodox_ez
 CRKBD_KEYBOARD ?= crkbd/rev4_1/standard
@@ -10,7 +12,7 @@ QMK_PATH := PATH=$(ARM_GCC_BIN):$(QMK_BIN_DIR):/opt/homebrew/bin:/usr/bin:/bin:/
 
 .PHONY: help \
 	sync install compile flash clean \
-	compile-all \
+	compile-all ci-build \
 	sync-ergodox install-ergodox compile-ergodox flash-ergodox clean-ergodox \
 	sync-crkbd install-crkbd compile-crkbd flash-crkbd clean-crkbd
 
@@ -21,6 +23,7 @@ help:
 		"  make flash           - alias for flash-ergodox" \
 		"  make clean           - alias for clean-ergodox" \
 		"  make compile-all     - build all targets from qmk.json" \
+		"  make ci-build        - build all targets in the GitHub Actions container" \
 		"  make compile-ergodox - build the ErgoDox firmware" \
 		"  make flash-ergodox   - flash the ErgoDox firmware" \
 		"  make clean-ergodox   - clean the ErgoDox build" \
@@ -32,6 +35,8 @@ help:
 		"  QMK=$(QMK)" \
 		"  KEYMAP=$(KEYMAP)" \
 		"  QMK_HOME=$(QMK_HOME)" \
+		"  DOCKER=$(DOCKER)" \
+		"  QMK_CI_IMAGE=$(QMK_CI_IMAGE)" \
 		"  ERGODOX_KEYBOARD=$(ERGODOX_KEYBOARD)" \
 		"  CRKBD_KEYBOARD=$(CRKBD_KEYBOARD)" \
 		"  ARM_GCC_BIN=$(ARM_GCC_BIN)" \
@@ -39,7 +44,8 @@ help:
 		"Examples:" \
 		"  make compile-ergodox" \
 		"  make compile-crkbd" \
-		"  make compile-all"
+		"  make compile-all" \
+		"  make ci-build"
 
 sync: sync-ergodox
 
@@ -81,3 +87,6 @@ clean-crkbd:
 
 compile-all:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) userspace-compile
+
+ci-build:
+	./scripts/ci-build.sh "$(DOCKER)" "$(QMK_CI_IMAGE)"

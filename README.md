@@ -82,6 +82,17 @@ make compile-crkbd QMK_HOME=$HOME/qmk_firmware
 make compile-all QMK_HOME=$HOME/qmk_firmware
 ```
 
+To build with the same container image used by GitHub Actions instead of your
+host QMK installation:
+
+```sh
+make ci-build
+```
+
+This runs `ghcr.io/qmk/qmk_cli:latest`, clones `qmk/qmk_firmware` inside a
+temporary workspace, points `qmk` at that checkout, and runs
+`qmk userspace-compile`.
+
 ## Notes
 
 - The `NAVIGATION` and `SYMBOLS` layers are accessible from the thumb cluster.
