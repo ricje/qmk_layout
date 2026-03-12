@@ -48,6 +48,16 @@ static bool is_home_row_mod(uint16_t keycode) {
     }
 }
 
+static bool is_alt_home_row_mod(uint16_t keycode) {
+    switch (keycode) {
+        case HM_S:
+        case HM_L:
+            return true;
+        default:
+            return false;
+    }
+}
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base layer with home-row mods and thumb access to navigation/symbol layers.
@@ -101,6 +111,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+    if (is_alt_home_row_mod(keycode)) {
+        return 140;
+    }
+
     if (is_home_row_mod(keycode)) {
         return 170;
     }
@@ -117,7 +131,7 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-    return is_home_row_mod(keycode);
+    return is_home_row_mod(keycode) && !is_alt_home_row_mod(keycode);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
