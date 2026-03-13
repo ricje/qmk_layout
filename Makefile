@@ -4,6 +4,7 @@ QMK_HOME ?= /Users/ricje/qmk_firmware
 QMK_BIN_DIR ?= /Users/ricje/.local/bin
 ARM_GCC_BIN ?= /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin
 DOCKER ?= docker
+CI_RUNTIME ?= container
 QMK_CI_IMAGE ?= ghcr.io/qmk/qmk_cli:latest
 
 ERGODOX_KEYBOARD ?= ergodox_ez
@@ -36,6 +37,7 @@ help:
 		"  KEYMAP=$(KEYMAP)" \
 		"  QMK_HOME=$(QMK_HOME)" \
 		"  DOCKER=$(DOCKER)" \
+		"  CI_RUNTIME=$(CI_RUNTIME)" \
 		"  QMK_CI_IMAGE=$(QMK_CI_IMAGE)" \
 		"  ERGODOX_KEYBOARD=$(ERGODOX_KEYBOARD)" \
 		"  CRKBD_KEYBOARD=$(CRKBD_KEYBOARD)" \
@@ -45,7 +47,8 @@ help:
 		"  make compile-ergodox" \
 		"  make compile-crkbd" \
 		"  make compile-all" \
-		"  make ci-build"
+		"  make ci-build" \
+		"  make ci-build CI_RUNTIME=container"
 
 sync: sync-ergodox
 
@@ -89,4 +92,4 @@ compile-all:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) userspace-compile
 
 ci-build:
-	./scripts/ci-build.sh "$(DOCKER)" "$(QMK_CI_IMAGE)"
+	./scripts/ci-build.sh "$(CI_RUNTIME)" "$(DOCKER)" "$(QMK_CI_IMAGE)"

@@ -93,6 +93,13 @@ This runs `ghcr.io/qmk/qmk_cli:latest`, clones `qmk/qmk_firmware` inside a
 temporary workspace, points `qmk` at that checkout, and runs
 `qmk userspace-compile`.
 
+By default on macOS this uses Apple's `container` runtime. To force Docker
+instead:
+
+```sh
+make ci-build CI_RUNTIME=docker
+```
+
 ## Notes
 
 - The `NAVIGATION` and `SYMBOLS` layers are accessible from the thumb cluster.
