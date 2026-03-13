@@ -15,7 +15,7 @@ QMK_PATH := PATH=$(ARM_GCC_BIN):$(QMK_BIN_DIR):/opt/homebrew/bin:/usr/bin:/bin:/
 
 .PHONY: help \
 	sync install compile flash clean \
-	compile-all ci-build layout-artifacts firmware-artifacts \
+	compile-all ci-build layout-artifacts firmware-artifacts lint-workflows \
 	sync-ergodox install-ergodox compile-ergodox flash-ergodox clean-ergodox \
 	sync-crkbd install-crkbd compile-crkbd flash-crkbd clean-crkbd
 
@@ -29,6 +29,7 @@ help:
 		"  make ci-build        - build all targets in the GitHub Actions container" \
 		"  make firmware-artifacts - collect compiled firmware into build/<kbd>/" \
 		"  make layout-artifacts - generate layout reference SVGs for all keyboards" \
+		"  make lint-workflows  - lint GitHub Actions workflows with actionlint" \
 		"  make compile-ergodox - build the ErgoDox firmware" \
 		"  make flash-ergodox   - flash the ErgoDox firmware" \
 		"  make clean-ergodox   - clean the ErgoDox build" \
@@ -55,6 +56,7 @@ help:
 		"  make compile-all" \
 		"  make firmware-artifacts" \
 		"  make layout-artifacts" \
+		"  make lint-workflows" \
 		"  make ci-build" \
 		"  make ci-build CI_RUNTIME=container"
 
@@ -113,6 +115,9 @@ compile-all:
 layout-artifacts:
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" ergodox "$(KEYMAP)"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" crkbd "$(KEYMAP)"
+
+lint-workflows:
+	actionlint
 
 ci-build:
 	./scripts/ci-build.sh "$(CI_RUNTIME)" "$(DOCKER)" "$(QMK_CI_IMAGE)"

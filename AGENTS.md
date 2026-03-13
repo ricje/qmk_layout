@@ -53,6 +53,7 @@
 - The workflow builds targets from `qmk.json`.
 - The ErgoDox artifact filename must match `ergodox_ez_base_ricje*.hex`.
 - CI should also generate and upload layout artifacts (`.svg` and `.pdf`).
+- Run `make lint-workflows` before pushing workflow changes when possible.
 - `release-on-layout-change.yml` is the publishing workflow for `main`.
 - Releases use CalVer tags in the form `YYYY.MM.DD` or `YYYY.MM.DD.N`.
 - Automatic releases should only trigger when layout-related files change:

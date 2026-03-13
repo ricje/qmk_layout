@@ -56,35 +56,38 @@ jobs:
         working-directory: userspace
         run: |
           git fetch --tags --force
-          tag_name="$(
-            python3 - <<'PY'
-import re
-import subprocess
-from datetime import datetime, timezone
+          today="$(date -u +%Y.%m.%d)"
+          max_suffix="$(
+            git tag -l "${today}*" | awk -F. -v today="$today" '
+              $0 == today {
+                if (max < 0) {
+                  max = 0
+                }
+                found = 1
+                next
+              }
 
-today = datetime.now(timezone.utc).strftime("%Y.%m.%d")
-tags = subprocess.check_output(
-    ["git", "tag", "-l", f"{today}*"],
-    text=True,
-).splitlines()
-max_suffix = None
+              $1 "." $2 "." $3 == today && $4 ~ /^[0-9]+$/ {
+                if ($4 + 0 > max) {
+                  max = $4 + 0
+                }
+                found = 1
+              }
 
-for tag in tags:
-    if tag == today:
-        max_suffix = max(0, max_suffix or 0)
-        continue
-
-    match = re.fullmatch(rf"{re.escape(today)}\.(\d+)", tag)
-    if match:
-        suffix = int(match.group(1))
-        max_suffix = suffix if max_suffix is None else max(max_suffix, suffix)
-
-if max_suffix is None:
-    print(today)
-else:
-    print(f"{today}.{max_suffix + 1}")
-PY
+              END {
+                if (found) {
+                  print max
+                }
+              }
+            '
           )"
+
+          if [ -z "$max_suffix" ]; then
+            tag_name="$today"
+          else
+            tag_name="${today}.$((max_suffix + 1))"
+          fi
+
           printf 'tag=%s\n' "$tag_name" >> "$GITHUB_OUTPUT"
 
       - name: Create git tag

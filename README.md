@@ -153,6 +153,14 @@ On `main`, it creates a new CalVer tag and GitHub Release only when one of these
 
 Each release attaches the generated contents of `build/`, including firmware and layout references.
 
+To lint GitHub Actions workflows before pushing:
+
+```sh
+make lint-workflows
+```
+
+This requires `actionlint` to be installed locally.
+
 ## Customization
 
 The main file is:
