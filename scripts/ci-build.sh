@@ -20,10 +20,11 @@ printf '%s\n' "Preparing temporary QMK firmware checkout in: $work_root"
 	-v "$repo_root:/workspace/userspace" \
 	-v "$work_root:/tmp/qmk-ci" \
 	-w /workspace/userspace \
-	"$image" \
-	bash -lc '
-		set -euo pipefail
-		git clone --depth=1 --branch master --recurse-submodules https://github.com/qmk/qmk_firmware.git /tmp/qmk-ci/qmk_firmware
-		qmk config user.qmk_home="/tmp/qmk-ci/qmk_firmware"
-		qmk userspace-compile
-	'
+		"$image" \
+		bash -lc '
+			set -euo pipefail
+			qmk_bin=/opt/uv/tools/qmk/bin/qmk
+			git clone --depth=1 --branch master --recurse-submodules https://github.com/qmk/qmk_firmware.git /tmp/qmk-ci/qmk_firmware
+			"$qmk_bin" config user.qmk_home="/tmp/qmk-ci/qmk_firmware"
+			"$qmk_bin" userspace-compile
+		'
