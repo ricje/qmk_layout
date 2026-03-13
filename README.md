@@ -74,6 +74,13 @@ The locally compiled firmware is collected into:
 `build/firmware/ergodox_ez_base_ricje.hex`
 `build/firmware/crkbd_rev4_1_standard_ricje.uf2`
 
+The generated layout references are collected into:
+
+`build/layouts/ergodox/ricje.oryx-like.svg`
+`build/layouts/crkbd/ricje.oryx-like.svg`
+`build/layouts/ergodox/ricje.oryx-like.pdf`
+`build/layouts/crkbd/ricje.oryx-like.pdf`
+
 The `Makefile` uses this path by default through `QMK_HOME`, but you can override it:
 
 ```sh
@@ -87,6 +94,14 @@ To change where the collected firmware files are stored:
 ```sh
 make compile-all ARTIFACT_DIR=out/firmware
 ```
+
+To regenerate only the layout references:
+
+```sh
+make layout-artifacts
+```
+
+This requires `keymap-drawer` and `cairosvg` to be installed locally.
 
 To build with the same container image used by GitHub Actions instead of your
 host QMK installation:

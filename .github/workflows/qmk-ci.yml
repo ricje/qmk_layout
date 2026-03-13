@@ -33,9 +33,16 @@ jobs:
         working-directory: userspace
         run: qmk config user.qmk_home="$GITHUB_WORKSPACE/qmk_firmware"
 
+      - name: Install layout artifact tools
+        run: python3 -m pip install keymap-drawer cairosvg
+
       - name: Build all userspace targets
         working-directory: userspace
         run: qmk userspace-compile
+
+      - name: Generate layout artifacts
+        working-directory: userspace
+        run: QMK_HOME="$GITHUB_WORKSPACE/qmk_firmware" make layout-artifacts
 
       - name: Upload firmware artifacts
         uses: actions/upload-artifact@v4
@@ -44,4 +51,6 @@ jobs:
           path: |
             qmk_firmware/ergodox_ez_base_ricje*.hex
             qmk_firmware/crkbd_rev4_1_standard_ricje*.uf2
+            userspace/build/layouts/**/*.svg
+            userspace/build/layouts/**/*.pdf
           if-no-files-found: error
