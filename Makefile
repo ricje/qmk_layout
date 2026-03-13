@@ -6,8 +6,8 @@ ARM_GCC_BIN ?= /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin
 DOCKER ?= docker
 CI_RUNTIME ?= container
 QMK_CI_IMAGE ?= ghcr.io/qmk/qmk_cli:latest
-ARTIFACT_DIR ?= build/firmware
-LAYOUT_ARTIFACT_DIR ?= build/layouts
+ARTIFACT_DIR ?= build
+LAYOUT_ARTIFACT_DIR ?= build
 
 ERGODOX_KEYBOARD ?= ergodox_ez
 CRKBD_KEYBOARD ?= crkbd/rev4_1/standard
@@ -15,7 +15,7 @@ QMK_PATH := PATH=$(ARM_GCC_BIN):$(QMK_BIN_DIR):/opt/homebrew/bin:/usr/bin:/bin:/
 
 .PHONY: help \
 	sync install compile flash clean \
-	compile-all ci-build layout-artifacts \
+	compile-all ci-build layout-artifacts firmware-artifacts \
 	sync-ergodox install-ergodox compile-ergodox flash-ergodox clean-ergodox \
 	sync-crkbd install-crkbd compile-crkbd flash-crkbd clean-crkbd
 
@@ -27,6 +27,7 @@ help:
 		"  make clean           - alias for clean-ergodox" \
 		"  make compile-all     - build all targets from qmk.json" \
 		"  make ci-build        - build all targets in the GitHub Actions container" \
+		"  make firmware-artifacts - collect compiled firmware into build/<kbd>/firmware" \
 		"  make layout-artifacts - generate layout reference SVGs for all keyboards" \
 		"  make compile-ergodox - build the ErgoDox firmware" \
 		"  make flash-ergodox   - flash the ErgoDox firmware" \
@@ -52,6 +53,7 @@ help:
 		"  make compile-ergodox" \
 		"  make compile-crkbd" \
 		"  make compile-all" \
+		"  make firmware-artifacts" \
 		"  make layout-artifacts" \
 		"  make ci-build" \
 		"  make ci-build CI_RUNTIME=container"
@@ -73,7 +75,7 @@ install-ergodox: sync-ergodox
 
 compile-ergodox:
 	env $(QMK_PATH) $(QMK) compile -kb $(ERGODOX_KEYBOARD) -km $(KEYMAP)
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" "ergodox_ez_base_$(KEYMAP).hex"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox/firmware" "ergodox_ez_base_$(KEYMAP).hex"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" ergodox "$(KEYMAP)"
 
 flash-ergodox:
@@ -89,7 +91,7 @@ install-crkbd: sync-crkbd
 
 compile-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) compile -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd/firmware" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" crkbd "$(KEYMAP)"
 
 flash-crkbd:
@@ -98,11 +100,13 @@ flash-crkbd:
 clean-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) clean -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
 
+firmware-artifacts:
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox/firmware" "ergodox_ez_base_$(KEYMAP).hex"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd/firmware" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
+
 compile-all:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) userspace-compile
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" \
-		"ergodox_ez_base_$(KEYMAP).hex" \
-		"crkbd_rev4_1_standard_$(KEYMAP).uf2"
+	$(MAKE) firmware-artifacts KEYMAP="$(KEYMAP)" ARTIFACT_DIR="$(ARTIFACT_DIR)"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" ergodox "$(KEYMAP)"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" crkbd "$(KEYMAP)"
 

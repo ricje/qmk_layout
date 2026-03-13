@@ -17,9 +17,9 @@
 ## Build Artifacts
 
 - Do not leave generated firmware files in the repository root.
-- Local firmware artifacts belong in `build/firmware/`.
-- Local layout reference artifacts belong in `build/layouts/`.
-- `build/` is treated as generated output and should not be committed.
+- Local firmware artifacts belong in `build/<keyboard>/firmware/`.
+- Local layout reference artifacts belong in `build/<keyboard>/docs/`.
+- `build/` should not be committed.
 
 ## Layout References
 

@@ -71,15 +71,15 @@ make flash-crkbd
 
 The locally compiled firmware is collected into:
 
-`build/firmware/ergodox_ez_base_ricje.hex`
-`build/firmware/crkbd_rev4_1_standard_ricje.uf2`
+`build/ergodox/firmware/ergodox_ez_base_ricje.hex`
+`build/crkbd/firmware/crkbd_rev4_1_standard_ricje.uf2`
 
 The generated layout references are collected into:
 
-`build/layouts/ergodox/ricje.oryx-like.svg`
-`build/layouts/crkbd/ricje.oryx-like.svg`
-`build/layouts/ergodox/ricje.oryx-like.pdf`
-`build/layouts/crkbd/ricje.oryx-like.pdf`
+`build/ergodox/docs/ricje.oryx-like.svg`
+`build/crkbd/docs/ricje.oryx-like.svg`
+`build/ergodox/docs/ricje.oryx-like.pdf`
+`build/crkbd/docs/ricje.oryx-like.pdf`
 
 The `Makefile` uses this path by default through `QMK_HOME`, but you can override it:
 
@@ -89,10 +89,10 @@ make compile-crkbd QMK_HOME=$HOME/qmk_firmware
 make compile-all QMK_HOME=$HOME/qmk_firmware
 ```
 
-To change where the collected firmware files are stored:
+To change where the collected artifacts are stored:
 
 ```sh
-make compile-all ARTIFACT_DIR=out/firmware
+make compile-all ARTIFACT_DIR=out LAYOUT_ARTIFACT_DIR=out
 ```
 
 To regenerate only the layout references:

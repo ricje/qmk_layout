@@ -31,7 +31,7 @@ ergodox)
 	qmk_draw_info="$qmk_home/keyboards/ergodox_ez/info.json"
 	keymap_path="$repo_root/keyboards/ergodox_ez/keymaps/$keymap_name/keymap.c"
 	layout_name="LAYOUT_ergodox_pretty"
-	output_dir="$artifact_root/ergodox"
+	output_dir="$artifact_root/ergodox/docs"
 	ghost_keys="0 1 2 3 4 5 6 7 8 9 10 11 12 13 54 55 56 61 62 63 64 65 66 67 68 69 71 72 73 74"
 	footer_text="ErgoDox EZ $keymap_name layout"
 	;;
@@ -40,7 +40,7 @@ crkbd)
 	qmk_draw_info="$qmk_home/keyboards/crkbd/rev4_1/info.json"
 	keymap_path="$repo_root/keyboards/crkbd/rev4_1/standard/keymaps/$keymap_name/keymap.c"
 	layout_name="LAYOUT_split_3x6_3"
-	output_dir="$artifact_root/crkbd"
+	output_dir="$artifact_root/crkbd/docs"
 	ghost_keys=""
 	footer_text="Corne $keymap_name layout"
 	;;
