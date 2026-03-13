@@ -58,6 +58,22 @@ static bool is_alt_home_row_mod(uint16_t keycode) {
     }
 }
 
+static bool is_vim_repeat_home_row_mod(uint16_t keycode) {
+    switch (keycode) {
+        case HM_A:
+        case HM_S:
+        case HM_D:
+        case HM_F:
+        case HM_J:
+        case HM_K:
+        case HM_L:
+        case HM_SCLN:
+            return true;
+        default:
+            return false;
+    }
+}
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base layer with home-row mods and thumb access to navigation/symbol layers.
@@ -123,6 +139,10 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 }
 
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
+    if (is_vim_repeat_home_row_mod(keycode)) {
+        return TAPPING_TERM;
+    }
+
     if (is_home_row_mod(keycode)) {
         return 0;
     }
