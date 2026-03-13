@@ -1,0 +1,117 @@
+name: Release On Layout Change
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "keyboards/**/keymaps/ricje/**"
+      - "qmk.json"
+      - "scripts/generate-layout-artifacts.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli
+
+    steps:
+      - name: Disable git safe directory checks
+        run: git config --global --add safe.directory '*'
+
+      - name: Checkout userspace
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          path: userspace
+
+      - name: Checkout QMK firmware
+        uses: actions/checkout@v4
+        with:
+          repository: qmk/qmk_firmware
+          ref: master
+          path: qmk_firmware
+          submodules: recursive
+
+      - name: Point QMK CLI at qmk_firmware
+        working-directory: userspace
+        run: qmk config user.qmk_home="$GITHUB_WORKSPACE/qmk_firmware"
+
+      - name: Install Cairo system libraries
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            libcairo2 \
+            libgdk-pixbuf-2.0-0 \
+            libffi-dev
+
+      - name: Install layout artifact tools
+        run: python3 -m pip install keymap-drawer cairosvg
+
+      - name: Compute release tag
+        id: calver
+        working-directory: userspace
+        run: |
+          git fetch --tags --force
+          tag_name="$(
+            python3 - <<'PY'
+import re
+import subprocess
+from datetime import datetime, timezone
+
+today = datetime.now(timezone.utc).strftime("%Y.%m.%d")
+tags = subprocess.check_output(
+    ["git", "tag", "-l", f"{today}*"],
+    text=True,
+).splitlines()
+max_suffix = None
+
+for tag in tags:
+    if tag == today:
+        max_suffix = max(0, max_suffix or 0)
+        continue
+
+    match = re.fullmatch(rf"{re.escape(today)}\.(\d+)", tag)
+    if match:
+        suffix = int(match.group(1))
+        max_suffix = suffix if max_suffix is None else max(max_suffix, suffix)
+
+if max_suffix is None:
+    print(today)
+else:
+    print(f"{today}.{max_suffix + 1}")
+PY
+          )"
+          printf 'tag=%s\n' "$tag_name" >> "$GITHUB_OUTPUT"
+
+      - name: Create git tag
+        working-directory: userspace
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${{ steps.calver.outputs.tag }}" -m "Layout release ${{ steps.calver.outputs.tag }}"
+          git push origin "${{ steps.calver.outputs.tag }}"
+
+      - name: Build all userspace targets
+        working-directory: userspace
+        run: qmk userspace-compile
+
+      - name: Collect firmware artifacts
+        working-directory: userspace
+        run: make firmware-artifacts
+
+      - name: Generate layout artifacts
+        working-directory: userspace
+        run: QMK_HOME="$GITHUB_WORKSPACE/qmk_firmware" make layout-artifacts
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.calver.outputs.tag }}
+          name: ${{ steps.calver.outputs.tag }}
+          generate_release_notes: true
+          files: |
+            userspace/build/**/*

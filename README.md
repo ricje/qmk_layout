@@ -141,6 +141,18 @@ It builds the targets listed in `qmk.json` on every push to `main`, on pull requ
 
 Successful runs upload the compiled firmware files as workflow artifacts.
 
+This repository also includes an automatic release workflow:
+
+`.github/workflows/release-on-layout-change.yml`
+
+On `main`, it creates a new CalVer tag and GitHub Release only when one of these changes:
+
+- `keyboards/**/keymaps/ricje/**`
+- `qmk.json`
+- `scripts/generate-layout-artifacts.sh`
+
+Each release attaches the generated contents of `build/`, including firmware and layout references.
+
 ## Customization
 
 The main file is:
