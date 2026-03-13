@@ -71,8 +71,8 @@ make flash-crkbd
 
 The locally compiled firmware is collected into:
 
-`build/ergodox/firmware/ergodox_ez_base_ricje.hex`
-`build/crkbd/firmware/crkbd_rev4_1_standard_ricje.uf2`
+`build/ergodox/ergodox_ez_base_ricje.hex`
+`build/crkbd/crkbd_rev4_1_standard_ricje.uf2`
 
 The generated layout references are collected into:
 

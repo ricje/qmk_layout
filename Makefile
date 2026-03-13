@@ -27,7 +27,7 @@ help:
 		"  make clean           - alias for clean-ergodox" \
 		"  make compile-all     - build all targets from qmk.json" \
 		"  make ci-build        - build all targets in the GitHub Actions container" \
-		"  make firmware-artifacts - collect compiled firmware into build/<kbd>/firmware" \
+		"  make firmware-artifacts - collect compiled firmware into build/<kbd>/" \
 		"  make layout-artifacts - generate layout reference SVGs for all keyboards" \
 		"  make compile-ergodox - build the ErgoDox firmware" \
 		"  make flash-ergodox   - flash the ErgoDox firmware" \
@@ -75,7 +75,7 @@ install-ergodox: sync-ergodox
 
 compile-ergodox:
 	env $(QMK_PATH) $(QMK) compile -kb $(ERGODOX_KEYBOARD) -km $(KEYMAP)
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox/firmware" "ergodox_ez_base_$(KEYMAP).hex"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox" "ergodox_ez_base_$(KEYMAP).hex"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" ergodox "$(KEYMAP)"
 
 flash-ergodox:
@@ -91,7 +91,7 @@ install-crkbd: sync-crkbd
 
 compile-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) compile -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd/firmware" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
 	QMK_HOME=$(QMK_HOME) ./scripts/generate-layout-artifacts.sh "$(LAYOUT_ARTIFACT_DIR)" crkbd "$(KEYMAP)"
 
 flash-crkbd:
@@ -101,8 +101,8 @@ clean-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) clean -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
 
 firmware-artifacts:
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox/firmware" "ergodox_ez_base_$(KEYMAP).hex"
-	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd/firmware" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/ergodox" "ergodox_ez_base_$(KEYMAP).hex"
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)/crkbd" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
 
 compile-all:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) userspace-compile
