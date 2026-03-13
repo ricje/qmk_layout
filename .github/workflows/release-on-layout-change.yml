@@ -23,13 +23,13 @@ jobs:
         run: git config --global --add safe.directory '*'
 
       - name: Checkout userspace
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           path: userspace
 
       - name: Checkout QMK firmware
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: qmk/qmk_firmware
           ref: master

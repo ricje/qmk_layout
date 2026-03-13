@@ -17,12 +17,12 @@ jobs:
         run: git config --global --add safe.directory '*'
 
       - name: Checkout userspace
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: userspace
 
       - name: Checkout QMK firmware
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: qmk/qmk_firmware
           ref: master
@@ -57,7 +57,7 @@ jobs:
         run: QMK_HOME="$GITHUB_WORKSPACE/qmk_firmware" make layout-artifacts
 
       - name: Upload firmware artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: qmk-firmware-artifacts
           path: |
