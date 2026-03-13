@@ -6,6 +6,7 @@ ARM_GCC_BIN ?= /Applications/ArmGNUToolchain/15.2.rel1/arm-none-eabi/bin
 DOCKER ?= docker
 CI_RUNTIME ?= container
 QMK_CI_IMAGE ?= ghcr.io/qmk/qmk_cli:latest
+ARTIFACT_DIR ?= build/firmware
 
 ERGODOX_KEYBOARD ?= ergodox_ez
 CRKBD_KEYBOARD ?= crkbd/rev4_1/standard
@@ -39,6 +40,7 @@ help:
 		"  DOCKER=$(DOCKER)" \
 		"  CI_RUNTIME=$(CI_RUNTIME)" \
 		"  QMK_CI_IMAGE=$(QMK_CI_IMAGE)" \
+		"  ARTIFACT_DIR=$(ARTIFACT_DIR)" \
 		"  ERGODOX_KEYBOARD=$(ERGODOX_KEYBOARD)" \
 		"  CRKBD_KEYBOARD=$(CRKBD_KEYBOARD)" \
 		"  ARM_GCC_BIN=$(ARM_GCC_BIN)" \
@@ -67,6 +69,7 @@ install-ergodox: sync-ergodox
 
 compile-ergodox:
 	env $(QMK_PATH) $(QMK) compile -kb $(ERGODOX_KEYBOARD) -km $(KEYMAP)
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" "ergodox_ez_base_$(KEYMAP).hex"
 
 flash-ergodox:
 	env $(QMK_PATH) $(QMK) flash -kb $(ERGODOX_KEYBOARD) -km $(KEYMAP)
@@ -81,6 +84,7 @@ install-crkbd: sync-crkbd
 
 compile-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) compile -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" "crkbd_rev4_1_standard_$(KEYMAP).uf2"
 
 flash-crkbd:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) flash -kb $(CRKBD_KEYBOARD) -km $(KEYMAP)
@@ -90,6 +94,9 @@ clean-crkbd:
 
 compile-all:
 	env $(QMK_PATH) QMK_HOME=$(QMK_HOME) $(QMK) userspace-compile
+	./scripts/store-artifacts.sh "$(ARTIFACT_DIR)" \
+		"ergodox_ez_base_$(KEYMAP).hex" \
+		"crkbd_rev4_1_standard_$(KEYMAP).uf2"
 
 ci-build:
 	./scripts/ci-build.sh "$(CI_RUNTIME)" "$(DOCKER)" "$(QMK_CI_IMAGE)"

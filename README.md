@@ -69,10 +69,10 @@ For the Corne:
 make flash-crkbd
 ```
 
-The locally compiled firmware is written to:
+The locally compiled firmware is collected into:
 
-`/Users/ricje/qmk_firmware/ergodox_ez_base_ricje.hex`
-`/Users/ricje/qmk_firmware/crkbd_rev4_1_standard_ricje.uf2`
+`build/firmware/ergodox_ez_base_ricje.hex`
+`build/firmware/crkbd_rev4_1_standard_ricje.uf2`
 
 The `Makefile` uses this path by default through `QMK_HOME`, but you can override it:
 
@@ -80,6 +80,12 @@ The `Makefile` uses this path by default through `QMK_HOME`, but you can overrid
 make compile-ergodox QMK_HOME=$HOME/qmk_firmware
 make compile-crkbd QMK_HOME=$HOME/qmk_firmware
 make compile-all QMK_HOME=$HOME/qmk_firmware
+```
+
+To change where the collected firmware files are stored:
+
+```sh
+make compile-all ARTIFACT_DIR=out/firmware
 ```
 
 To build with the same container image used by GitHub Actions instead of your
