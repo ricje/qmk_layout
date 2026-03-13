@@ -74,6 +74,7 @@ static bool is_vim_repeat_home_row_mod(uint16_t keycode) {
     }
 }
 
+// Keep fast double-tap repeat available on the Vim navigation columns.
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // Base layer with home-row mods and thumb access to navigation/symbol layers.
