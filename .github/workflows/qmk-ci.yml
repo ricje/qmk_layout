@@ -33,6 +33,14 @@ jobs:
         working-directory: userspace
         run: qmk config user.qmk_home="$GITHUB_WORKSPACE/qmk_firmware"
 
+      - name: Install Cairo system libraries
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            libcairo2 \
+            libgdk-pixbuf-2.0-0 \
+            libffi-dev
+
       - name: Install layout artifact tools
         run: python3 -m pip install keymap-drawer cairosvg
 
