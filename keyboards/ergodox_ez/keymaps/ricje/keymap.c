@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     if (is_alt_home_row_mod(keycode)) {
-        return 140;
+        return 170;
     }
 
     if (is_home_row_mod(keycode)) {
