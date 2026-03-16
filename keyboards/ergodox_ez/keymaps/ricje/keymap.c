@@ -23,8 +23,8 @@ enum custom_keycodes {
 #define HM_D CTL_T(KC_D)
 #define HM_F SFT_T(KC_F)
 #define HM_J RSFT_T(KC_J)
-#define HM_K RCTL_T(KC_K)
-#define HM_L RALT_T(KC_L)
+#define HM_K LCTL_T(KC_K)
+#define HM_L LALT_T(KC_L)
 #define HM_SCLN RGUI_T(KC_SCLN)
 
 // Thumb cluster access points.
