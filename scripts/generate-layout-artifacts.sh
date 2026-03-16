@@ -39,7 +39,7 @@ crkbd)
 	qmk_keyboard="crkbd/rev4_1/standard"
 	qmk_draw_info="$qmk_home/keyboards/crkbd/rev4_1/info.json"
 	keymap_path="$repo_root/keyboards/crkbd/rev4_1/standard/keymaps/$keymap_name/keymap.c"
-	layout_name="LAYOUT_split_3x6_3"
+	layout_name="LAYOUT_split_3x6_3_ex2"
 	output_dir="$artifact_root/crkbd/docs"
 	ghost_keys=""
 	footer_text="Corne $keymap_name layout"
@@ -158,6 +158,8 @@ parse_config:
     HYPR: Hyper
   raw_binding_map:
     XXX: ""
+    "OSM(MOD_MEH)": Meh
+    "OSM(MOD_HYPR)": Hyper
     HM_A: {t: A, h: Gui}
     HM_S: {t: S, h: Alt}
     HM_D: {t: D, h: Ctrl}
@@ -171,6 +173,11 @@ parse_config:
     TH_FN: {t: Fn}
     DESKTOP_NEXT: {t: Desk, h: "->"}
     DESKTOP_PREV: {t: Desk, h: "<-"}
+    DM_REC1: Rec 1
+    DM_REC2: Rec 2
+    DM_RSTP: Stop
+    DM_PLY1: Play 1
+    DM_PLY2: Play 2
 EOF
 
 python3 - "$config_path" "$footer_text" <<'PY'
