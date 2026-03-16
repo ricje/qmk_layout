@@ -1,7 +1,7 @@
 #pragma once
 
 #undef DEBOUNCE
-#define DEBOUNCE 5
+#define DEBOUNCE 10
 
 #define TAPPING_TERM 180
 #define TAPPING_TERM_PER_KEY
