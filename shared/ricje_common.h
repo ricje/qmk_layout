@@ -117,6 +117,10 @@ uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_
 }
 
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
+    return false;
+}
+
+bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     return is_shift_home_row_mod(keycode);
 }
 
