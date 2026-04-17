@@ -54,6 +54,16 @@ static bool is_alt_home_row_mod(uint16_t keycode) {
     }
 }
 
+static bool is_shift_home_row_mod(uint16_t keycode) {
+    switch (keycode) {
+        case HM_F:
+        case HM_J:
+            return true;
+        default:
+            return false;
+    }
+}
+
 static bool is_vim_repeat_home_row_mod(uint16_t keycode) {
     switch (keycode) {
         case HM_A:
@@ -94,8 +104,28 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t *record) {
     return QUICK_TAP_TERM;
 }
 
+uint16_t get_flow_tap_term(uint16_t keycode, keyrecord_t *record, uint16_t prev_keycode) {
+    if (is_shift_home_row_mod(keycode)) {
+        return 0;
+    }
+
+    if (is_home_row_mod(keycode) && is_shift_home_row_mod(prev_keycode)) {
+        return 0;
+    }
+
+    return is_flow_tap_key(keycode) && is_flow_tap_key(prev_keycode) ? FLOW_TAP_TERM : 0;
+}
+
 bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-    return false;
+    return is_shift_home_row_mod(keycode);
+}
+
+bool get_chordal_hold(uint16_t tap_hold_keycode, keyrecord_t *tap_hold_record, uint16_t other_keycode, keyrecord_t *other_record) {
+    if (is_shift_home_row_mod(tap_hold_keycode)) {
+        return true;
+    }
+
+    return get_chordal_hold_default(tap_hold_record, other_record);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
