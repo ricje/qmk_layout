@@ -103,6 +103,15 @@ make layout-artifacts
 
 This requires `keymap-drawer` and `cairosvg` to be installed locally.
 
+To generate a clangd compilation database for both keyboards:
+
+```sh
+make clangd-index
+```
+
+This writes the merged database to `compile_commands.json` and keeps the
+per-keyboard databases under `build/clangd/`.
+
 To build with the same container image used by GitHub Actions instead of your
 host QMK installation:
 
